@@ -143,15 +143,25 @@ const voteForCandidate = asyncHandler(async (req, res) => {
 });
 
 const votesCount = asyncHandler(async (req, res) => {
+  const votingStatus = await VotingStatus.findOne(); 
+
+  if (!votingStatus) {
+    throw new ApiError(500, "Voting status not found");
+  }
+
+  if (req.user.role !== "admin" && votingStatus.isVotingOpen) {
+    throw new ApiError(403, "Results will be available after voting ends");
+  }
+
   const candidates = await Candidate.find().select("name party voteCount");
 
   if (!candidates || candidates.length === 0) {
     throw new ApiError(404, "No candidates found");
   }
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, candidates, "Vote counts fetched successfully"));
+  return res.status(200).json(
+    new ApiResponse(200, candidates, "Vote counts fetched successfully")
+  );
 });
 
 export {

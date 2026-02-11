@@ -26,6 +26,6 @@ router.route("/vote/:candidateId").post(
     verifyJWT, authorizeRoles("voter"), voteForCandidate
 )
 router.route("/vote/count").get(
-    votesCount
+    verifyJWT, votesCount
 )
 export default router;
