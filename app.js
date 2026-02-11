@@ -17,6 +17,12 @@ app.use(express.urlencoded({ // encodeed data that comes from url
 }))
 app.use(cookieParser())
 
+// test route:
+app.get('/', (req, res) => {
+    res.send("API is working")
+})
+
+
 import userRoute from './routes/user.route.js';
 import candidateRoute from './routes/candidate.route.js';
 import votingStatusRoute from './routes/votingStatus.route.js';
@@ -24,6 +30,5 @@ import votingStatusRoute from './routes/votingStatus.route.js';
 app.use("/api/v1/users", userRoute)
 app.use("/api/v1/candidates", candidateRoute)
 app.use("/api/v1/voting-status", votingStatusRoute)
-
 
 export default app
