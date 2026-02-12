@@ -3,24 +3,37 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 
-dotenv.config(); // load env variables
+dotenv.config();
 
 const app = express();
 
-// Parse allowed origins from env
-const allowedOrigins = process.env.CORS_ORIGINS.split(",");
+// Allowed origins
+const allowedOrigins = process.env.CORS_ORIGINS.split(",").map(o => o.trim());
 
-// CORS setup
+// CORS middleware
 app.use(cors({
   origin: function(origin, callback){
-    if(!origin) return callback(null, true); // allow Postman or server-side requests
+    // Allow server-to-server requests or Postman
+    if(!origin) return callback(null, true);
     if(allowedOrigins.includes(origin)){
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
+}));
+
+// Handle preflight OPTIONS requests for all routes
+app.options("*", cors({
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.includes(origin)){
+      return callback(null, true);
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
 }));
 
 // Body parsers
