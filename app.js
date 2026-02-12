@@ -7,7 +7,7 @@ const app = express();
 // Allowed frontend origins
 const allowedOrigins = [
   'http://localhost:5173', // local frontend
-  'https://jade-melba-56aec3.netlify.app/' // deployed frontend
+  'https://jade-melba-56aec3.netlify.app' // deployed frontend
 ];
 
 app.use(cors({
