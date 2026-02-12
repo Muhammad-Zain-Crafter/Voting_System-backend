@@ -164,6 +164,14 @@ const votesCount = asyncHandler(async (req, res) => {
   );
 });
 
+const resetVotes = asyncHandler(async (req, res) => {
+  const result = await Candidate.updateMany({}, { $set: { votes: [], voteCount: 0 } });
+
+  return res.status(200).json(
+    new ApiResponse(200, {}, "All candidate votes have been reset to 0")
+  );
+});
+
 export {
   createCandidate,
   updateCandidate,
@@ -172,4 +180,5 @@ export {
   voteForCandidate,
   getCandidateById,
   votesCount,
+  resetVotes
 };
