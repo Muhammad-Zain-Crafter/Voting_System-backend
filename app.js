@@ -6,7 +6,7 @@ const app = express();
 
 // Allowed frontend origins
 const allowedOrigins = [
-  'http://localhost:5173', // local frontend
+  'http://localhost:5175', // local frontend
   'https://jade-melba-56aec3.netlify.app' // deployed frontend
 ];
 
