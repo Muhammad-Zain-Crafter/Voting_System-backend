@@ -4,31 +4,32 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
-// Allowed frontend origins
 const allowedOrigins = [
-  'http://localhost:5175', // local frontend
-  'https://jade-melba-56aec3.netlify.app',
-  'https://soft-semolina-a64a4c.netlify.app' // deployed frontend
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  process.env.CORS_ORIGIN, // Netlify URL
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like Postman)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true, // allow cookies
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // Postman, server requests
 
-app.use(express.json({ limit: '50kb' }));
-app.use(express.urlencoded({ limit: '50kb', extended: true }));
+      if (!allowedOrigins.includes(origin)) {
+        return callback(new Error('Not allowed by CORS'));
+      }
+
+      callback(null, true);
+    },
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// test route:
 app.get('/', (req, res) => {
   res.send('API is working');
 });
